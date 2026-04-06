@@ -12,8 +12,10 @@ import java.util.Base64
 
 class AudioClient(
     private val client: OkHttpClient,
-    private val baseUrl: String = "https://hifi-one.spotisaver.net"
 ) : TrackClient {
+
+    private val baseUrl: String
+        get() = MonochromePreferences.currentBaseUrl
 
     private val placeholderPrefix = "monochrome:"
 
