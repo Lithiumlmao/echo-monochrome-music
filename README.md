@@ -1,9 +1,12 @@
-# 🎵 [Monochrome Music](https://monochrome.tf/) for Echo Nightly
+# 🎵 [Monochrome Music](https://monochrome.tf/) for Echo
 
 > [!IMPORTANT]
-> Before you proceed, this project is VIBE CODED, don't expect me to fix bugs and such, tho i will appreciate if you can publish issues
+> Before you proceed, this project is vibe coded (because i don't know how to code in Kotlin and have no time to learn it right now), don't expect me to fix bugs or make big changes and such. If it works, i will keep it as it is. Though i will appreciate if you can publish issues and pull requests.
 
 ​A high-performance, privacy-focused Tidal proxy extension for Echo Nightly.
+
+## ❓ Why bother using this?
+I know, the [Deezer extension](https://github.com/LuftVerbot/echo-deezer-extension/) gave you access to Lossless FLAC for free. But [Monochrome Music](https://monochrome.tf) is more privacy-focused in general and Tidal offers better audio quality (although they are the same sample rate, etc., Tidal just sounds better in my opinion). Also, this extension isn't meant to be use as a full extension because of the lack of artists metadata, it's meant to be use with [Combine Extension](https://github.com/dutixlf/echo-combine-extension) for the best possible free music listening experience.
 
 ## ​✨ Features
 
@@ -19,3 +22,18 @@
 * [ ] (Local?) playlist support
 * [ ] Optimize the extension
 
+## 📥 Installation
+Ensure you have Echo installed on your device before proceeding. You can get it from [Discord](https://discord.gg/J3WvbBUU8Z) or [this](https://github.com/itsmechinmoy/echo-nightly/releases/latest) Github repository release page.
+
+1. **Download the Extension**:
+   - Visit the [latest release page](https://github.com/Lithiumlmao/echo-monochrome-music/releases/latest).
+   - Download the latest `.eapk` file of the Deezer Extension.
+
+2. **Install the Extension**:
+   - Open the downloaded `.eapk` file.
+   - When prompted, select **Echo** as the application to install the extension.
+   - Follow the on-screen instructions to complete the installation.
+
+3. **Launch Echo**:
+   - Open the Echo app.
+   - The Monochrome Extension is now installed and ready to use.
