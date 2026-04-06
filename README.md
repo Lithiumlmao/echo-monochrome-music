@@ -19,6 +19,7 @@ I know, the [Deezer extension](https://github.com/LuftVerbot/echo-deezer-extensi
 * [ ] Ability to view artists info, songs, etc.
 * [ ] A home feed
 * [ ] Algorithm for starting radio
+* [ ] Improve the search page
 * [ ] (Local?) playlist support
 * [ ] Optimize the extension
 
