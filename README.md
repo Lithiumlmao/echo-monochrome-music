@@ -3,8 +3,6 @@
 > [!IMPORTANT]
 > Before you proceed, this project is vibe coded (because i don't know how to code in Kotlin and have no time to learn it right now), don't expect me to fix bugs or make big changes and such. If it works, i will keep it as it is. Though i will appreciate if you can publish issues and pull requests.
 
-
-
 > [!NOTE]
 > Do not request Hi-Res Lossless audio support. Because of Echo's software limitation, it won't and will never be possible
 
@@ -20,11 +18,11 @@ I know, the [Deezer extension](https://github.com/LuftVerbot/echo-deezer-extensi
 * **📂 Free and Open Source:** Privacy-first, no subscription, hidden fees, no login required. Start listening right away!
 
 ## 📝 TODO
-* [ ] Changing Monochrome Instances inside Settings page
+* [x] Changing Monochrome Instances inside Settings page
 * [ ] Ability to view artists info, songs, etc.
 * [ ] A home feed
 * [ ] Algorithm for starting radio
-* [ ] Improve the search page
+* [ ] Improve the search client
 * [ ] (Local?) playlist support
 * [ ] Optimize the extension
 
