@@ -10,8 +10,10 @@ import kotlinx.serialization.json.*
 
 class ArtistClient(
     private val client: OkHttpClient,
-    private val baseUrl: String = "https://hifi-one.spotisaver.net"
 ) : dev.brahmkshatriya.echo.common.clients.ArtistClient {
+
+    private val baseUrl: String
+        get() = MonochromePreferences.currentBaseUrl
 
     override suspend fun loadArtist(artist: Artist): Artist = artist
 
