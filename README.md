@@ -3,6 +3,8 @@
 > [!IMPORTANT]
 > Before you proceed, this project is vibe coded (because i don't know how to code in Kotlin and have no time to learn it right now), don't expect me to fix bugs or make big changes and such. If it works, i will keep it as it is. Though i will appreciate if you can publish issues and pull requests.
 
+
+
 > [!NOTE]
 > Do not request Hi-Res Lossless audio support. Because of Echo's software limitation, it won't and will never be possible
 
