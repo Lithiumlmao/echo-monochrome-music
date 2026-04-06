@@ -10,8 +10,10 @@ import kotlinx.serialization.json.*
 
 class AlbumClient(
     private val client: OkHttpClient,
-    private val baseUrl: String = "https://hifi-one.spotisaver.net"
 ) : dev.brahmkshatriya.echo.common.clients.AlbumClient {
+
+    private val baseUrl: String
+        get() = MonochromePreferences.currentBaseUrl
 
     override suspend fun loadAlbum(album: Album): Album = album
 
