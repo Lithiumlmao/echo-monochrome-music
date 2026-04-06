@@ -37,4 +37,4 @@ Ensure you have Echo installed on your device before proceeding. You can get it 
 
 3. **Launch Echo**:
    - Open the Echo app.
-   - The Monochrome Extension is now installed and ready to use.
+   - The Monochrome Music Extension is now installed and ready to use.
