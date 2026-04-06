@@ -11,8 +11,10 @@ import kotlinx.serialization.json.*
 
 class SearchClient(
     private val client: OkHttpClient,
-    private val baseUrl: String = "https://hifi-one.spotisaver.net"
 ) : SearchFeedClient {
+
+    private val baseUrl: String
+        get() = MonochromePreferences.currentBaseUrl
 
     override suspend fun loadSearchFeed(query: String): Feed<Shelf> {
         val tabs = listOf(
