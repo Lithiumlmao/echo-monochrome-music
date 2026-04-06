@@ -43,11 +43,11 @@ val extAuthorUrl: String? by project
 val extRepoUrl: String? by project
 val extUpdateUrl: String? by project
 
-//val gitHash = execute("git", "rev-parse", "HEAD").take(7)
-//val gitCount = execute("git", "rev-list", "--count", "HEAD").toInt()
+val gitHash = execute("git", "rev-parse", "HEAD").take(7)
+val gitCount = execute("git", "rev-list", "--count", "HEAD").toInt()
 
-val verCode = 6.7
-val verName = "hhh"
+val verCode = gitCount
+val verName = "v$gitHash"
 
 publishing {
     publications {
@@ -80,10 +80,10 @@ tasks {
                     "Extension-Description" to extDescription,
 
                     "Extension-Author" to extAuthor,
-                    //"Extension-Author-Url" to extAuthorUrl,
+                    "Extension-Author-Url" to extAuthorUrl,
 
-                    //"Extension-Repo-Url" to extRepoUrl,
-                    //"Extension-Update-Url" to extUpdateUrl
+                    "Extension-Repo-Url" to extRepoUrl,
+                    "Extension-Update-Url" to extUpdateUrl
                 )
             )
         }
