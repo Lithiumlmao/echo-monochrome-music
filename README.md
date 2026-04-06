@@ -7,15 +7,15 @@
 
 ## ​✨ Features
 
-**- ​🔍 Unified Search:** Fast, tabbed search results for Tracks, Artists, Albums, and Playlists.
-**- 🎧 Multi-Quality Streaming:** Supports Lossless (16-bit FLAC), High (320kbps AAC), and Low (96kbps AAC).
-**- 📂 Free and Open Source:** Privacy-first, no subscription, hidden fees, no login required. Start listening right away!
+* **🔍 Unified Search:** Fast, tabbed search results for Tracks, Artists, Albums, and Playlists.
+* **🎧 Multi-Quality Streaming:** Supports Lossless (16-bit FLAC), High (320kbps AAC), and Low (96kbps AAC).
+* **📂 Free and Open Source:** Privacy-first, no subscription, hidden fees, no login required. Start listening right away!
 
 ## 📝 TODO
-[ ] Changing Monochrome Instances inside Settings page
-[ ] Ability to view artists info, songs, etc.
-[ ] A home feed
-[ ] Algorithm for starting radio
-[ ] (Local?) playlist support
-[ ] Optimize the extension
+* [ ] Changing Monochrome Instances inside Settings page
+* [ ] Ability to view artists info, songs, etc.
+* [ ] A home feed
+* [ ] Algorithm for starting radio
+* [ ] (Local?) playlist support
+* [ ] Optimize the extension
 
