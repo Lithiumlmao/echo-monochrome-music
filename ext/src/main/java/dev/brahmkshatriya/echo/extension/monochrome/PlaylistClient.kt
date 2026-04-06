@@ -10,8 +10,10 @@ import kotlinx.serialization.json.*
 
 class PlaylistClient(
     private val client: OkHttpClient,
-    private val baseUrl: String = "https://hifi-one.spotisaver.net"
 ) : dev.brahmkshatriya.echo.common.clients.PlaylistClient {
+
+    private val baseUrl: String
+        get() = MonochromePreferences.currentBaseUrl
 
     override suspend fun loadPlaylist(playlist: Playlist): Playlist = playlist
 
