@@ -6,10 +6,12 @@ import dev.brahmkshatriya.echo.common.clients.TrackClient
 import dev.brahmkshatriya.echo.common.clients.AlbumClient as EchoAlbumClient
 import dev.brahmkshatriya.echo.common.clients.ArtistClient as EchoArtistClient
 import dev.brahmkshatriya.echo.common.clients.PlaylistClient as EchoPlaylistClient
-import dev.brahmkshatriya.echo.common.settings.Setting
-import dev.brahmkshatriya.echo.common.settings.Settings
+import dev.brahmkshatriya.echo.common.settings.*
 import dev.brahmkshatriya.echo.extension.monochrome.*
 import okhttp3.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.*
 import java.util.concurrent.TimeUnit
 
 private val stealthInterceptor = Interceptor { chain ->
@@ -54,6 +56,71 @@ class MonochromeExtension : ExtensionClient,
     EchoArtistClient by ArtistClient(customClient),
     EchoPlaylistClient by PlaylistClient(customClient) 
 {
-    override suspend fun getSettingItems(): List<Setting> = emptyList()
-    override fun setSettings(settings: Settings) {}
+    private var instancesCache: List<Pair<String, String>>? = null
+
+    override fun setSettings(settings: Settings) {
+        val savedUrl = settings.getString("monochrome_instance")
+        if (savedUrl != null) {
+            MonochromePreferences.currentBaseUrl = savedUrl
+        }
+    }
+
+    override suspend fun getSettingItems(): List<Setting> {
+        val instances = fetchInstances()
+        
+        val entryTitles = instances.map { it.first }
+        val entryValues = instances.map { it.second }
+        
+        val currentIndex = entryValues.indexOf(MonochromePreferences.currentBaseUrl).let {
+            if (it == -1) 0 else it
+        }
+
+        val settingList = SettingList(
+            title = "Monochrome Instance",
+            key = "monochrome_instance",
+            summary = "Select an active Monochrome instance. Healthy instances are marked with 🟢, unreachable ones with 🔴.",
+            entryTitles = entryTitles,
+            entryValues = entryValues,
+            defaultEntryIndex = currentIndex
+        )
+
+        return listOf(settingList)
+    }
+
+    private suspend fun fetchInstances(): List<Pair<String, String>> = withContext(Dispatchers.IO) {
+        if (instancesCache != null) return@withContext instancesCache!!
+
+        val list = mutableListOf<Pair<String, String>>()
+        try {
+            val request = Request.Builder().url("https://tidal-uptime.jiffy-puffs-1j.workers.dev/").build()
+            customClient.newCall(request).execute().use { response ->
+                if (response.isSuccessful) {
+                    val root = Json.parseToJsonElement(response.body!!.string()).jsonObject
+                    
+                    // 1. Parse Healthy "API" Instances
+                    val apiNodes = root["api"]?.jsonArray ?: emptyList()
+                    for (node in apiNodes) {
+                        val url = node.jsonObject["url"]?.jsonPrimitive?.content ?: continue
+                        val version = node.jsonObject["version"]?.jsonPrimitive?.content ?: "Unknown"
+                        val host = url.replace("https://", "").replace("http://", "")
+                        list.add("🟢 $host (v$version)" to url)
+                    }
+
+                    // 2. Parse "Down" Instances
+                    val downNodes = root["down"]?.jsonArray ?: emptyList()
+                    for (node in downNodes) {
+                        val url = node.jsonObject["url"]?.jsonPrimitive?.content ?: continue
+                        val error = node.jsonObject["error"]?.jsonPrimitive?.content ?: "Unknown Error"
+                        val host = url.replace("https://", "").replace("http://", "")
+                        list.add("🔴 $host (Down: $error)" to url)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        
+        instancesCache = list
+        list
+    }
 }
