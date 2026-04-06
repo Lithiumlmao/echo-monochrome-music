@@ -26,6 +26,10 @@ I know, the [Deezer extension](https://github.com/LuftVerbot/echo-deezer-extensi
 * [ ] (Local?) playlist support
 * [ ] Optimize the extension
 
+## ⚠️ Known issues
+* **Skipping track(s):** Can't be fixed. Either it's region-locked or read more about it [here](https://support.tidal.com/hc/en-us/articles/202347382-Greyed-out-or-Unavailable-Content#:~:text=An%20album%20or%20track%20will,to%20make%20available%20for%20streaming)
+* **Changing instance might require full app restart else search won't work:** Might be fixed in the future
+
 ## 📥 Installation
 Ensure you have Echo installed on your device before proceeding. You can get it from [Discord](https://discord.gg/J3WvbBUU8Z) or [this](https://github.com/itsmechinmoy/echo-nightly/releases/latest) Github repository release page.
 
