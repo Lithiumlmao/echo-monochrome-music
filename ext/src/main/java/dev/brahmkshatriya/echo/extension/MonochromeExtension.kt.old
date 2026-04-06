@@ -1,0 +1,60 @@
+package dev.brahmkshatriya.echo.extension
+
+import dev.brahmkshatriya.echo.common.clients.ExtensionClient
+import dev.brahmkshatriya.echo.common.clients.SearchFeedClient
+import dev.brahmkshatriya.echo.common.clients.TrackClient
+import dev.brahmkshatriya.echo.common.settings.Setting
+import dev.brahmkshatriya.echo.common.settings.Settings
+import dev.brahmkshatriya.echo.extension.monochrome.*
+import okhttp3.OkHttpClient
+import okhttp3.Protocol
+import okhttp3.Interceptor
+import okhttp3.ConnectionSpec
+import okhttp3.TlsVersion
+import okhttp3.CipherSuite
+import java.util.concurrent.TimeUnit
+
+private val stealthInterceptor = Interceptor { chain ->
+    val original = chain.request()
+    val request = original.newBuilder()
+        .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+        .header("Accept", "application/json, text/plain, */*")
+        .header("Accept-Language", "en-US,en;q=0.9")
+        .build()
+    chain.proceed(request)
+}
+
+// THIS IS THE FIX: Mimic Chrome's exact SSL/TLS Handshake Fingerprint
+private val chromeConnectionSpec = ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+    .tlsVersions(TlsVersion.TLS_1_3, TlsVersion.TLS_1_2)
+    .cipherSuites(
+        // These are the exact ciphers Chrome prefers. 
+        // Using these prevents Cloudflare from dropping the socket mid-handshake.
+        CipherSuite.TLS_AES_128_GCM_SHA256,
+        CipherSuite.TLS_AES_256_GCM_SHA384,
+        CipherSuite.TLS_CHACHA20_POLY1305_SHA256,
+        CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+        CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+        CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+        CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+        CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
+        CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+    )
+    .build()
+
+private val customClient = OkHttpClient.Builder()
+    .protocols(listOf(Protocol.HTTP_1_1))
+    .retryOnConnectionFailure(true)
+    .connectionSpecs(listOf(chromeConnectionSpec, ConnectionSpec.CLEARTEXT)) // Inject the fake fingerprint!
+    .addInterceptor(stealthInterceptor)
+    .connectTimeout(30, TimeUnit.SECONDS)
+    .readTimeout(30, TimeUnit.SECONDS)
+    .build()
+
+class MonochromeExtension : ExtensionClient, 
+    SearchFeedClient by SearchClient(customClient, "https://singapore-1.monochrome.tf"),
+    TrackClient by AudioClient(customClient, "https://singapore-1.monochrome.tf") {
+
+    override suspend fun getSettingItems(): List<Setting> = emptyList()
+    override fun setSettings(settings: Settings) {}
+}

@@ -1,0 +1,68 @@
+package dev.brahmkshatriya.echo.extension.monochrome
+
+import dev.brahmkshatriya.echo.common.clients.SearchFeedClient
+import dev.brahmkshatriya.echo.common.models.*
+import dev.brahmkshatriya.echo.common.helpers.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonPrimitive
+
+class SearchClient(
+    private val client: OkHttpClient, 
+    private val baseUrl: String
+) : SearchFeedClient {
+
+    override suspend fun loadSearchFeed(query: String): Feed<Shelf> = withContext(Dispatchers.IO) {
+        val encodedQuery = java.net.URLEncoder.encode(query, "UTF-8")
+        val request = Request.Builder()
+            .url("$baseUrl/search/?s=$encodedQuery&limit=20")
+            .build()
+
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) {
+                return@use Feed<Shelf>(emptyList()) { _ -> Feed.Data(PagedData.Single { emptyList<Shelf>() }) }
+            }
+            
+            val bodyString = response.body?.string() ?: return@use Feed<Shelf>(emptyList()) { _ -> Feed.Data(PagedData.Single { emptyList<Shelf>() }) }
+            val json = Json.parseToJsonElement(bodyString).jsonObject
+            val dataNode = json["data"]
+            
+            val tracksJson = if (dataNode is kotlinx.serialization.json.JsonArray) dataNode else {
+                val obj = dataNode?.jsonObject
+                obj?.get("tracks")?.jsonArray ?: obj?.get("items")?.jsonArray ?: obj?.get("results")?.jsonArray ?: emptyList()
+            }
+            
+            val tracks = tracksJson.map { element ->
+                val trackObj = element.jsonObject
+                val id = trackObj["id"]?.jsonPrimitive?.content ?: ""
+                val title = trackObj["title"]?.jsonPrimitive?.content ?: "Unknown"
+                
+                val artistsArray = trackObj["artists"]?.jsonArray
+                val artistName = artistsArray?.firstOrNull()?.jsonObject?.get("name")?.jsonPrimitive?.content ?: "Unknown Artist"
+                
+                // Album Art extraction
+                val coverUuid = trackObj["album"]?.jsonObject?.get("cover")?.jsonPrimitive?.content
+                val coverUrl = coverUuid?.let { "https://resources.tidal.com/images/${it.replace("-", "/")}/320x320.jpg" }
+                
+                // FIXED: Added the second argument (crop = false) required by the v3 API!
+                val coverImage = coverUrl?.let { ImageHolder.NetworkRequestImageHolder(NetworkRequest(it), false) }
+                
+                Track(
+                    id = id,
+                    title = title,
+                    artists = listOf(Artist(id = artistName, name = artistName)),
+                    cover = coverImage
+                )
+            }
+
+            return@use Feed<Shelf>(emptyList()) { _ ->
+                Feed.Data(PagedData.Single<Shelf> { listOf(Shelf.Lists.Tracks(id = "search_res", title = "Search Results", list = tracks)) })
+            }
+        }
+    }
+}
