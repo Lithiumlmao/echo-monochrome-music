@@ -32,12 +32,11 @@ val extAuthorUrl: String? by project
 val extRepoUrl: String? by project
 val extUpdateUrl: String? by project
 
-//val gitHash = execute("git", "rev-parse", "HEAD").take(7)
-//val gitCount = execute("git", "rev-list", "--count", "HEAD").toInt()
+val gitHash = execute("git", "rev-parse", "HEAD").take(7)
+val gitCount = execute("git", "rev-list", "--count", "HEAD").toInt()
 
-val verCode = 6.7
-val verName = "hhh"
-
+val verCode = gitCount
+val verName = "v$gitHash"
 
 val outputDir = file("${layout.buildDirectory.asFile.get()}/generated/proguard")
 val generatedProguard = file("${outputDir}/generated-rules.pro")
